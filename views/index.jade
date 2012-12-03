@@ -2,5 +2,13 @@ extends layout
 
 block content
 	div
+		img(src='http://www.tadcoenvironmental.com/simon/SimonS2.png', name='panel', usemap='#simonMap', ismap='ismap')
+		map(name='simonMap')
+			area(shape='circle', coords='226,118,50', alt='Yellow', id='up')
+			area(shape='circle', coords='226,340,50', alt='Blue', id='down')
+			area(shape='circle', coords='118,232,50', alt='Green', id='left')
+			area(shape='circle', coords='340,230,50', alt='Red', id='right')
+
+		
 		a(id='sender')='Send a Message'
 		ul(id='receiver')
