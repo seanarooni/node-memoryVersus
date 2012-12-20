@@ -13,8 +13,10 @@ based on node-boilerplate
 get node from http://nodejs.org/
 
 <h1>to install</h1>
-make sure node is installed
-git clone http://github.com/seanarooni/node-memoryVersus.git
-cd node-memoryVersus
-npm install (to install all dependencies)
-node server.js (to start the server)
+<ul>
+<li>make sure node is installed</li>
+<li>git clone http://github.com/seanarooni/node-memoryVersus.git</li>
+<li>cd node-memoryVersus</li>
+<li>npm install (to install all dependencies)</li>
+<li>node server.js (to start the server)</li>
+</ul>
