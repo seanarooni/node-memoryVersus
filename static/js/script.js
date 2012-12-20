@@ -4,38 +4,70 @@
 $(document).ready(function() {   
 
   var socket = io.connect();
+  var d;
+    
+  function init()
+  {
+  	if(typeof game_loop != "undefined") {
+  	 clearInterval(game_loop); }
+  	  game_loop = setInterval(handleButtons, 100);
+  	  d = null;
+  }  
+  init();
+    
+  function revert()
+  {
+    setTimeout(function(){ document.panel.src='http://www.tadcoenvironmental.com/simon/SimonS2.png'; }, 200);
+  }
+
+ function handleButtons()
+  {
+	  if(d == 'up')
+	  {
+		socket.emit('message', 'D: up key (yellow) pressed on ' + new Date());
+		document.panel.src='http://www.tadcoenvironmental.com/simon/upSelected1.png';
+		revert();
+	  } else if(d == 'down') { //down
+		socket.emit('message', 'D: down key (blue) pressed on ' + new Date());
+		document.panel.src='http://www.tadcoenvironmental.com/simon/downSelected1.png';
+		revert();
+	  } else if(d == 'left') { //left
+		socket.emit('message', 'D: left key (green) pressed on ' + new Date());
+		document.panel.src='http://www.tadcoenvironmental.com/simon/_leftSelected1.png';
+		revert();
+	  } else if(d == 'right') { //right
+		socket.emit('message', 'D: right key (red) pressed on ' + new Date());
+		document.panel.src='http://www.tadcoenvironmental.com/simon/_rightSelected1.png';
+		revert();
+	  }
 
   $('#up').bind('click', function() {
-  	socket.emit('message', 'Yellow button pressed on ' + new Date());
-  	document.panel.src='http://www.tadcoenvironmental.com/simon/upSelected1.png';
-  	setTimeout(function(){ document.panel.src='http://www.tadcoenvironmental.com/simon/SimonS2.png'; }, 200);
+    d = 'up';
   });
   
   $('#right').bind('click', function() {
-  	socket.emit('message', 'Red button pressed on ' + new Date());
-  	document.panel.src='http://www.tadcoenvironmental.com/simon/leftSelected1.png';
-  	setTimeout(function(){ document.panel.src='http://www.tadcoenvironmental.com/simon/SimonS2.png'; }, 200);
-
+    d = 'right';
   });
   
   $('#down').bind('click', function() {
-  	socket.emit('message', 'Blue button pressed on ' + new Date());
-  	document.panel.src='http://www.tadcoenvironmental.com/simon/downSelected1.png';
-  	setTimeout(function(){ document.panel.src='http://www.tadcoenvironmental.com/simon/SimonS2.png'; }, 200);
-
+    d = 'down';
   });
   
   $('#left').bind('click', function() {
-  	socket.emit('message', 'Green button pressed on ' + new Date());
-  	document.panel.src='http://www.tadcoenvironmental.com/simon/rightSelected1.png';
-  	setTimeout(function(){ document.panel.src='http://www.tadcoenvironmental.com/simon/SimonS2.png'; }, 200);
-
+  	d = 'left';
   });
   
-  $('#sender').bind('click', function() {
-   socket.emit('message', 'Message Sent on ' + new Date());     
-  });
-
+  $(document).keydown(function(e){
+  	var key = e.which;
+  	
+  	if(key == "38") d = 'up';
+  	else if(key == "40") d = 'down';
+  	else if(key == "37") d = 'left';
+	else if(key == "39") d = 'right';
+  	});
+  	d = null;
+  }		
+  
   socket.on('server_message', function(data){
    $('#receiver').append('<li>' + data + '</li>');  
   });
