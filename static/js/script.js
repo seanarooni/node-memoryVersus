@@ -24,19 +24,19 @@ $(document).ready(function() {
   {
 	  if(d == 'up')
 	  {
-		socket.emit('message', 'D: up key (yellow) pressed on ' + new Date());
+		socket.emit('message', 'up (yellow) pressed on ' + new Date());
 		document.panel.src='http://www.tadcoenvironmental.com/simon/upSelected1.png';
 		revert();
 	  } else if(d == 'down') { //down
-		socket.emit('message', 'D: down key (blue) pressed on ' + new Date());
+		socket.emit('message', 'down (blue) pressed on ' + new Date());
 		document.panel.src='http://www.tadcoenvironmental.com/simon/downSelected1.png';
 		revert();
 	  } else if(d == 'left') { //left
-		socket.emit('message', 'D: left key (green) pressed on ' + new Date());
+		socket.emit('message', 'left (green) pressed on ' + new Date());
 		document.panel.src='http://www.tadcoenvironmental.com/simon/_leftSelected1.png';
 		revert();
 	  } else if(d == 'right') { //right
-		socket.emit('message', 'D: right key (red) pressed on ' + new Date());
+		socket.emit('message', 'right (red) pressed on ' + new Date());
 		document.panel.src='http://www.tadcoenvironmental.com/simon/_rightSelected1.png';
 		revert();
 	  }
