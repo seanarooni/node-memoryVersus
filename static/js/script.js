@@ -10,6 +10,7 @@ $(document).ready(function() {
   var pattern = new Array();
   var response = new Array();
   var listen = false; 
+  var playp = false;
 
 
   function AssetManager() {
@@ -113,31 +114,20 @@ $(document).ready(function() {
     //this should play one note, and i can call it within playPattern
   }
 
-  function playSingle(p,i)
-  {
-    var speed = 500;
-    var finale = pattern.length - 1;
-    setTimeout(function(){ 
-      document.panel.src='http://www.tadcoenvironmental.com/simon/' + p + 'Selected.png';
-      setTimeout(function(){ 
-        document.panel.src='http://www.tadcoenvironmental.com/simon/SimonS2.png';
-        if (i == finale) {
-          console.log('final playSingle called');
-        }
-      }, (speed - 100)*(i+1));
-     }, speed*i);
-  }
+  
   
   function playPattern()
   {
     var i = 0;
+    playp = true;
     //p = pattern[i]; 
     //console.log('p= ' + p);
     //play(0);
     if (listen == false)
     {
-      play();
+      play(i);
     }
+
     function next()
     {
       //is there a next number in the pattern
@@ -146,45 +136,37 @@ $(document).ready(function() {
       //i think i can replace the else statement with this function
     }
 
-    function play()
+    function play(i)
     {
       console.log('play were called and listen = ' + listen);
-
-      /*setTimeout(function()
-      {
-      revert();
-      }, 500*(i+1));  //controls flash duration.  */
-
       //recursion goes here
-        if(i<pattern.length)
-        {
-        //p = pattern[i];
-        //(function()
-        //{
-          p = pattern[i];
-          console.log('well i = ' + i);
-          console.log('well p= ' + p);
-          /*if(p == 1 )
-          {
-          document.panel.src='http://www.tadcoenvironmental.com/simon/upSelected1.png';
-          setTimeout(revert, 500*(i+1));  //instead of revert it should call next, but next could be revert
-          } else if(p == 4) { //down
-          document.panel.src='http://www.tadcoenvironmental.com/simon/downSelected1.png';
-          setTimeout(revert, 500*(i+1));
-          } else if(p == 2) { //left
-          document.panel.src='http://www.tadcoenvironmental.com/simon/_leftSelected1.png';
-          setTimeout(revert, 500*(i+1));
-          } else if(p == 3) { //right
-          document.panel.src='http://www.tadcoenvironmental.com/simon/_rightSelected1.png';
-          setTimeout(revert, 500*(i+1));
-          }*/
-        //}); // end of setTimeout
-        //document.panel.src='http://www.tadcoenvironmental.com/simon/' + p + 'Selected.png';
-        //setTimeout(revert, 500*(i+1));
+      if(i<pattern.length)
+      {
+        p = pattern[i];
+        console.log('well i = ' + i);
+        console.log('well p= ' + p);
         playSingle(p, i);
-        i++;
-        play();
       } 
+    }
+
+    function playSingle(p,i)
+    {
+      var speed = 500;
+      var pL = pattern.length - 1;
+      setTimeout(function(){ 
+        document.panel.src='http://www.tadcoenvironmental.com/simon/' + p + 'Selected.png';
+        setTimeout(function(){ 
+          document.panel.src='http://www.tadcoenvironmental.com/simon/SimonS2.png';
+          if (i == pL) {
+            console.log('final playSingle called');
+            listen = true;
+            playp = false;
+          } else {
+            i += 1;
+            play(i);
+          }
+        }, (speed - 100)*(i+1));
+       }, speed*i);
     }  
   }//end of playPattern
 
@@ -258,9 +240,9 @@ $(document).ready(function() {
     if (listen == true)
     {
       listenEvent();
-    } else {   
+    } else if (listen == false && playp == false) {   
       playPattern();
-    }
+    } else if (listen == false && playp == true) {}
   }
 
   socket.on('server_message', function(data){
