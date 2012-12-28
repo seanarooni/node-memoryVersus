@@ -11,6 +11,79 @@ $(document).ready(function() {
   var response = new Array();
   var listen = false; 
 
+
+  function AssetManager() {
+    this.successCount = 0;
+    this.errorCount = 0;
+    this.cache = {};
+    this.downloadQueue = [];
+    this.soundsQueue = [];
+  }
+
+  AssetManager.prototype.queueDownload = function(path) {
+    this.downloadQueue.push(path);
+  }
+
+  AssetManager.prototype.queueSound = function(id, path) {
+    this.soundsQueue.push({id: id, path: path});
+  }
+
+  AssetManager.prototype.downloadAll = function(downloadCallback) {
+    if (this.downloadQueue.length == 0 && this.soundsQueue.length === 0) {
+      downloadCallback();
+    }
+    this.downloadSounds(downloadCallback);
+
+    for (var i = 0; i < this.downloadQueue.length; i++) {
+      var path = this.downloadQueue[i];
+      var img = new Image();
+      var that = this;
+      img.addEventListener("load", function() {
+        console.log(this.src + ' is loaded');
+        that.successCount += 1;
+        if (that.isDone()) {
+          downloadCallback();
+        }
+      }, false);
+      img.addEventListener("error", function() {
+        that.errorCount += 1;
+        if (that.isDone()) {
+          downloadCallback();
+        }
+      }, false);
+      img.src = path;
+      this.cache[path] = img;
+    }
+  }
+
+  AssetManager.prototype.downloadSound = function(id, path, soundsCallback) {
+    var that = this;
+    this.cache[path] = soundManager.createSound({
+      id: id,
+      autoLoad: true,
+      url: path,
+      onload: function() {
+        console.log(this.url + ' is loaded');
+        that.successCount += 1;
+        if (that.isDone()) {
+          soundsCallback();
+        }
+      }
+    });
+  }
+
+  AssetManager.prototype.getSound = function(path) {
+    return this.cache[path];
+  }
+
+  AssetManager.prototype.getAsset = function(path) {
+    return this.cache[path];
+  }
+
+  AssetManager.prototype.isDone = function() {
+    return ((this.downloadQueue.length + this.soundsQueue.length) == this.successCount + this.errorCount);
+  }
+
   function init()
   {
     var initialPatternLength = 4;
@@ -43,9 +116,15 @@ $(document).ready(function() {
   function playSingle(p,i)
   {
     var speed = 500;
+    var finale = pattern.length - 1;
     setTimeout(function(){ 
       document.panel.src='http://www.tadcoenvironmental.com/simon/' + p + 'Selected.png';
-      setTimeout(function(){ document.panel.src='http://www.tadcoenvironmental.com/simon/SimonS2.png'; }, (speed - 100)*(i+1));
+      setTimeout(function(){ 
+        document.panel.src='http://www.tadcoenvironmental.com/simon/SimonS2.png';
+        if (i == finale) {
+          console.log('final playSingle called');
+        }
+      }, (speed - 100)*(i+1));
      }, speed*i);
   }
   
@@ -105,11 +184,7 @@ $(document).ready(function() {
         playSingle(p, i);
         i++;
         play();
-      } else {
-        listen = true;
-        listenEvent();
-        console.log('set listen to true');
-      } //end of function play()
+      } 
     }  
   }//end of playPattern
 
@@ -154,6 +229,7 @@ $(document).ready(function() {
 
     if(listen == true)
     { 
+      console.log('start listening now');
       if(d == 'up')
       {
       socket.emit('message', 'up (yellow) pressed on ' + myEpoch);
