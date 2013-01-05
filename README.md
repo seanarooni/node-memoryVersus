@@ -1,10 +1,10 @@
 <h1>node-memoryVersus</h1>
 
-Node-votesystem is a simple example of app built on top of node-boilerplate. 
+a memory game using node.js
 
-So far only the client view is set up. 
+The goal is to make this multiplayer.
 
-Socket.io will be used to display real-time auto-updating results (total vote) on each client view. 
+Currently undergoing an overhaul to use canvas now that playback is working.  
 
 a demo can be viewed at http://itsjustnotthathard.net
 
